@@ -1,4 +1,5 @@
 import time
+from .options import *
 
 class MainMenu:
 
@@ -40,7 +41,7 @@ class MainMenu:
             return
 
         if option == "1":
-            print(option)
+            Options().load_file()
         elif option == "2":
             print(option)
         elif option == "3":
