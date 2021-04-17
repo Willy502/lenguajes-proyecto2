@@ -43,7 +43,7 @@ class MainMenu:
         if option == "1":
             Options().load_file()
         elif option == "2":
-            print(option)
+            Options().show_gram_info()
         elif option == "3":
             print(option)
         elif option == "4":

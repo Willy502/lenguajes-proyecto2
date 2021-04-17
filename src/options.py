@@ -15,3 +15,9 @@ class Options:
 
         else:
             print("No se ha seleccionado ningun archivo\n")
+        
+    def read_file(self):
+        print("Read")
+
+    def show_gram_info(self):
+        print("Show")
