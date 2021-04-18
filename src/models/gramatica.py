@@ -5,7 +5,7 @@ class Gramatica:
         self._nterminales = None
         self._terminales = None
         self._io = None
-        self._producciones = None
+        self._producciones = []
 
     @property
     def name(self):
@@ -45,4 +45,4 @@ class Gramatica:
 
     @producciones.setter
     def producciones(self, value):
-        self._producciones = value
+        self._producciones.append(value)

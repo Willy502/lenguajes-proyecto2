@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog as fd
 from .proyecto_singleton import *
+from .reader import *
 
 class Options:
 
@@ -12,12 +13,13 @@ class Options:
         if file != "":
             ProyectoSingleton().file = file
             print("El archivo se ha cargado exitosamente\n")
+            self.read_file()
 
         else:
             print("No se ha seleccionado ningun archivo\n")
         
     def read_file(self):
-        print("Read")
+        Reader().read()
 
     def show_gram_info(self):
         print("Show")
