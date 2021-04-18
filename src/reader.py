@@ -3,6 +3,8 @@ from .proyecto_singleton import *
 
 class Reader:
 
+    _is_valid_gram = False
+
     def read(self):
         with open(ProyectoSingleton().file, 'r') as file:
             data = file.readlines()
@@ -10,6 +12,7 @@ class Reader:
             arrayGramatica = []
             gramatica = Gramatica()
             line_of_gram = 1
+            
 
             for line in data:
                 
@@ -22,15 +25,16 @@ class Reader:
                     gramatica.io = line.split(";")[2].split(",")
                     line_of_gram += 1
                 elif line.strip() == "*": # Cambio de gramatica
-                    arrayGramatica.append(gramatica)
+                    print(self._is_valid_gram)
+                    if self._is_valid_gram:
+                        arrayGramatica.append(gramatica)
                     gramatica = Gramatica()
                     line_of_gram = 1 
+                    self._is_valid_gram = False
                 else: # Producciones
                     self.buildProductions(gramatica, line)
             
             ProyectoSingleton().gramaticas = arrayGramatica
-
-                
 
     def buildProductions(self, gramatica, line):
         productions = line.split("->")
@@ -45,11 +49,15 @@ class Reader:
                     "tipo": "no terminal",
                     "valor": prod.strip()
                 })
+                
             elif prod.strip() in gramatica.terminales:
                 productionsArray.append({
                     "tipo": "terminal",
                     "valor": prod.strip()
                 })
+
+            if prod.strip() == name:
+                self._is_valid_gram = True
 
         for grams in gramatica.producciones:
             if grams["name"] == name:

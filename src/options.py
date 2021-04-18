@@ -23,4 +23,6 @@ class Options:
         Reader().read()
 
     def show_gram_info(self):
-        print("Show")
+        gramaticas = ProyectoSingleton().gramaticas
+        for gramatica in gramaticas:
+            print(gramatica.name)

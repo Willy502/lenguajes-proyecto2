@@ -1,5 +1,6 @@
 import time
 from .options import *
+from .proyecto_singleton import *
 
 class MainMenu:
 
@@ -37,6 +38,11 @@ class MainMenu:
 
         if option not in ["1", "2", "3", "4", "5", "6"]:
             print("Seleccione una opción válida")
+            self.show_menu()
+            return
+        
+        if option in ["2", "3", "4", "5"] and ProyectoSingleton().file is None:
+            print("No ha cargado un archivo de gramáticas")
             self.show_menu()
             return
 
