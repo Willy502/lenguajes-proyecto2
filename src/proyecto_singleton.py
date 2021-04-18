@@ -2,6 +2,7 @@ class ProyectoSingleton(object):
 
     __instance = None
     file = None
+    gramaticas = None
 
     def __new__(cls):
         if ProyectoSingleton.__instance is None:

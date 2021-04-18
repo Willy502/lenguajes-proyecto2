@@ -28,7 +28,7 @@ class Reader:
                 else: # Producciones
                     self.buildProductions(gramatica, line)
             
-            print(arrayGramatica[0].producciones)
+            ProyectoSingleton().gramaticas = arrayGramatica
 
                 
 

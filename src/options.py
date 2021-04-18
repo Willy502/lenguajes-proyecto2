@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import filedialog as fd
 from .proyecto_singleton import *
 from .reader import *
+from .main_menu import *
 
 class Options:
 

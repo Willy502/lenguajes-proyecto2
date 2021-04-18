@@ -52,3 +52,4 @@ class MainMenu:
             print(option)
         elif option == "6":
             quit()
+        self.show_menu()
