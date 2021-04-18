@@ -26,8 +26,10 @@ class Options:
     def show_gram_info(self):
         print("---------------------------------")
         gramaticas = ProyectoSingleton().gramaticas
+        i = 1
         for gramatica in gramaticas:
-            print("1. " + gramatica.name)
+            print(str(i) + ". " + gramatica.name)
+            i += 1
         print("---------------------------------")
         print("Seleccione una gramática > ", end="")
         answer = input()
@@ -35,7 +37,7 @@ class Options:
 
         gramatica = gramaticas[int(answer) - 1]
         ProyectoSingleton().selected_grammar = gramatica
-        
+
         print("Nombre de la gramática tipo 2 = " + gramatica.name)
         print("No terminales = { " + ', '.join([str(l) for l in gramatica.nterminales]) + " }")
         print("Terminales = { " + ', '.join([str(l) for l in gramatica.terminales]) + " }")
