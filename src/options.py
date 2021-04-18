@@ -23,6 +23,23 @@ class Options:
         Reader().read()
 
     def show_gram_info(self):
+        print("---------------------------------")
         gramaticas = ProyectoSingleton().gramaticas
         for gramatica in gramaticas:
-            print(gramatica.name)
+            print("Nombre de la gramática tipo 2 = " + gramatica.name)
+            print("No terminales = { " + ', '.join([str(l) for l in gramatica.nterminales]) + " }")
+            print("Terminales = { " + ', '.join([str(l) for l in gramatica.terminales]) + " }")
+            print("No terminal inicial = " + gramatica.io)
+            print("Producciones:")
+            for produccion in gramatica.producciones:
+                rules_print = ""
+                
+                i = 0
+                for prods in produccion["rules"]:
+                    if i > 0:
+                        rules_print += "\n    |"
+                    for p in prods:
+                        rules_print += " " + p["valor"]
+                    i += 1
+                print(produccion["name"] + " -> " + rules_print)
+            print("---------------------------------")

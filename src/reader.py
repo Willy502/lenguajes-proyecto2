@@ -22,10 +22,9 @@ class Reader:
                 elif line_of_gram == 2: # Terminales, no terminales y punto inicial
                     gramatica.nterminales = line.split(";")[0].split(",")
                     gramatica.terminales = line.split(";")[1].split(",")
-                    gramatica.io = line.split(";")[2].split(",")
+                    gramatica.io = line.split(";")[2]
                     line_of_gram += 1
                 elif line.strip() == "*": # Cambio de gramatica
-                    print(self._is_valid_gram)
                     if self._is_valid_gram:
                         arrayGramatica.append(gramatica)
                     gramatica = Gramatica()
@@ -66,5 +65,5 @@ class Reader:
 
         gramatica.producciones = {
                     "name": name,
-                    "rules": productionsArray
+                    "rules": [productionsArray]
                 }
