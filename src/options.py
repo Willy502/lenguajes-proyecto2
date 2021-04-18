@@ -3,6 +3,7 @@ from tkinter import filedialog as fd
 from .proyecto_singleton import *
 from .reader import *
 from .main_menu import *
+import os
 
 class Options:
 
@@ -26,20 +27,37 @@ class Options:
         print("---------------------------------")
         gramaticas = ProyectoSingleton().gramaticas
         for gramatica in gramaticas:
-            print("Nombre de la gramática tipo 2 = " + gramatica.name)
-            print("No terminales = { " + ', '.join([str(l) for l in gramatica.nterminales]) + " }")
-            print("Terminales = { " + ', '.join([str(l) for l in gramatica.terminales]) + " }")
-            print("No terminal inicial = " + gramatica.io)
-            print("Producciones:")
-            for produccion in gramatica.producciones:
-                rules_print = ""
+            print("1. " + gramatica.name)
+        print("---------------------------------")
+        print("Seleccione una gramática > ", end="")
+        answer = input()
+        self.screen_clear()
+
+        gramatica = gramaticas[int(answer) - 1]
+        ProyectoSingleton().selected_grammar = gramatica
+        
+        print("Nombre de la gramática tipo 2 = " + gramatica.name)
+        print("No terminales = { " + ', '.join([str(l) for l in gramatica.nterminales]) + " }")
+        print("Terminales = { " + ', '.join([str(l) for l in gramatica.terminales]) + " }")
+        print("No terminal inicial = " + gramatica.io)
+        print("Producciones:")
+        for produccion in gramatica.producciones:
+            rules_print = ""
                 
-                i = 0
-                for prods in produccion["rules"]:
-                    if i > 0:
-                        rules_print += "\n    |"
-                    for p in prods:
-                        rules_print += " " + p["valor"]
-                    i += 1
-                print(produccion["name"] + " -> " + rules_print)
-            print("---------------------------------")
+            i = 0
+            for prods in produccion["rules"]:
+                if i > 0:
+                    rules_print += "\n    |"
+                for p in prods:
+                    rules_print += " " + p["valor"]
+                i += 1
+            print(produccion["name"] + " -> " + rules_print)
+        print("---------------------------------")
+
+    def screen_clear(self):
+        # for mac and linux(here, os.name is 'posix')
+        if os.name == 'posix':
+            _ = os.system('clear')
+        else:
+            # for windows platfrom
+            _ = os.system('cls')
