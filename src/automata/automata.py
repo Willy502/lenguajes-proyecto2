@@ -36,6 +36,6 @@ class Automata:
 
         dot.render('test-output/AP_' + grammar.name + '.gv', view=False)
         file_name = dot.filepath + ".pdf"
-        Helper().build_html(name_show ,file_name)
+        Helper().build_html(grammar ,name_show ,file_name)
         print("Autómata de pila equivalente generado exitósamente")
 

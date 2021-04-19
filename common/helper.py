@@ -3,7 +3,14 @@ import os
 
 class Helper:
 
-    def build_html(self, name, pdf):
+    def build_html(self, gramatica, name, pdf):
+
+        info1 = "Terminales = { " + ','.join([str(l) for l in gramatica.terminales]) + " }\n"
+        info2 = "Alfabeto de la pila = { " + ','.join([str(l) for l in gramatica.terminales]) + "," + ','.join([str(l) for l in gramatica.nterminales]) + ",# }\n"
+        info3 = "Estados = { i,p,q,f }\n"
+        info4 = "Estado Inicial = { i }\n"
+        info5 = "Estado de aceptación = { f }\n"
+
         html = '''<!doctype html>
             <html lang="en">
             <head>
@@ -21,16 +28,26 @@ class Helper:
                     html, body {
                         height: 100%;
                     }
+                    h1, p {
+                        color: #fff;
+                    }
                 </style>
             </head>
             <body>
             <br />
-            <h1>''' + name + '''</h1>
+            <h1>Nombre: ''' + name + '''</h1>
             <hr />
                 <div class="container">
                     <div class="row">
                         <div class="col-8 offset-2">
                             <embed class="col-12" type="application/pdf" src="''' + pdf + '''" height="500px">
+                        </div>
+                        <div class="col-8 offset-2">
+                            <p>''' + info1 + '''</p>
+                            <p>''' + info2 + '''</p>
+                            <p>''' + info3 + '''</p>
+                            <p>''' + info4 + '''</p>
+                            <p>''' + info5 + '''</p>
                         </div>
                     </div>
                 </div>
