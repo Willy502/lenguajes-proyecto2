@@ -51,7 +51,7 @@ class MainMenu:
         elif option == "2":
             Options().show_gram_info()
         elif option == "3":
-            print(option)
+            Options().generate_equivalent_automata()
         elif option == "4":
             print(option)
         elif option == "5":

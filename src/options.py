@@ -4,6 +4,7 @@ from .proyecto_singleton import *
 from .reader import *
 from .main_menu import *
 import os
+from src.automata.automata import *
 
 class Options:
 
@@ -63,3 +64,6 @@ class Options:
         else:
             # for windows platfrom
             _ = os.system('cls')
+
+    def generate_equivalent_automata(self):
+        Automata().build_equivalent_automata()
