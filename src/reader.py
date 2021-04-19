@@ -21,8 +21,10 @@ class Reader:
                     gramatica.name = line.strip()
                 elif line_of_gram == 2: # Terminales, no terminales y punto inicial
                     gramatica.nterminales = line.split(";")[0].split(",")
+                    gramatica.nterminales = [nterminal.replace("\n", "").strip() for nterminal in gramatica.nterminales]
                     gramatica.terminales = line.split(";")[1].split(",")
-                    gramatica.io = line.split(";")[2]
+                    gramatica.terminales = [terminal.replace("\n", "").strip() for terminal in gramatica.terminales]
+                    gramatica.io = line.split(";")[2].replace("\n", "").strip()
                     line_of_gram += 1
                 elif line.strip() == "*": # Cambio de gramatica
                     if self._is_valid_gram:

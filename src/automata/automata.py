@@ -39,3 +39,38 @@ class Automata:
         Helper().build_html(grammar ,name_show ,file_name)
         print("Autómata de pila equivalente generado exitósamente")
 
+    def run_report(self, string):
+        grammar = ProyectoSingleton().selected_grammar
+
+        i = 0
+        input_length = len(string)
+        stack = []
+        state = "i"
+
+        while (i < input_length):
+
+            if state == "i":
+                stack.insert(0, {
+                    "tipo": "no terminal",
+                    "valor": "#"
+                })
+
+                state = "p"
+                
+            
+            elif state == "p":
+                stack.insert(0, {
+                    "tipo": "no terminal",
+                    "valor": grammar.io
+                })
+
+                state = "q"
+
+            elif state == "q":
+                print("Estado q")
+                print(stack)
+                return
+
+            elif state == "f":
+                print("Estado f")
+

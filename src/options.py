@@ -67,3 +67,8 @@ class Options:
 
     def generate_equivalent_automata(self):
         Automata().build_equivalent_automata()
+
+    def run_report(self):
+        print("Ingresa la cadena a evaluar > ", end="")
+        answer = input()
+        Automata().run_report(answer)

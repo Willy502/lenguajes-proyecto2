@@ -53,7 +53,7 @@ class MainMenu:
         elif option == "3":
             Options().generate_equivalent_automata()
         elif option == "4":
-            print(option)
+            Options().run_report()
         elif option == "5":
             print(option)
         elif option == "6":
