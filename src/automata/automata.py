@@ -67,7 +67,6 @@ class Automata:
                 state = "q"
 
             elif state == "q":
-                print("Estado q")
                 print(stack)
                 return
 
