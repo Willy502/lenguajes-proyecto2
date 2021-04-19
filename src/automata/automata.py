@@ -1,12 +1,13 @@
 from src.proyecto_singleton import *
 from graphviz import Digraph
+from common.helper import *
 
 class Automata:
 
     def build_equivalent_automata(self):
         grammar = ProyectoSingleton().selected_grammar
-
-        dot = Digraph(comment="AP_" + grammar.name, graph_attr={'rankdir':'LR', 'splines':'line'})
+        name_show = "AP_" + grammar.name
+        dot = Digraph(comment=name_show, graph_attr={'rankdir':'LR', 'splines':'line'})
         dot.node("", "", color="white")
         dot.node("i", "i", shape='circle')
         dot.node("p", "p", shape='circle')
@@ -33,6 +34,8 @@ class Automata:
         
         dot.edge("q", "f", label="λ,#;λ")
 
-        dot.render('test-output/AP_' + grammar.name + '.gv', view=True)
+        dot.render('test-output/AP_' + grammar.name + '.gv', view=False)
+        file_name = dot.filepath + ".pdf"
+        Helper().build_html(name_show ,file_name)
         print("Autómata de pila equivalente generado exitósamente")
 

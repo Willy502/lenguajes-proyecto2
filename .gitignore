@@ -2,3 +2,5 @@ src/__pycache__
 src/models/__pycache__
 src/automata/__pycache__
 test-output
+common/__pycache__
+*.html
