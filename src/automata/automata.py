@@ -92,9 +92,7 @@ class Automata:
                                     rule = current_rule
                                 
                             if rule == {}:
-                                #print("INTERNAL ---------")
-                                #print(current_char)
-                                #print(produccion)
+
                                 for int_rule in produccion["rules"]:
                                     if int_rule[0]["valor"] in grammar.nterminales:
                                         for int_prod in grammar.producciones:
@@ -105,10 +103,6 @@ class Automata:
                                                             "tipo":"no terminal",
                                                             "valor": int_rule[0]["valor"]
                                                         }]
-
-                                #for internal_prod in grammar.producciones:
-                                    
-                                #print("-----------")
 
                             stack.pop(0)
 
