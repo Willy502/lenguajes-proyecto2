@@ -51,11 +51,20 @@ class MainMenu:
         elif option == "2":
             Options().show_gram_info()
         elif option == "3":
-            Options().generate_equivalent_automata()
+            if ProyectoSingleton().selected_grammar != None:
+                Options().generate_equivalent_automata()
+            else:
+                print("No ha seleccionado una gramática")
         elif option == "4":
-            Options().run_report()
+            if ProyectoSingleton().selected_grammar != None:
+                Options().run_report()
+            else:
+                print("No ha seleccionado una gramática")
         elif option == "5":
-            print(option)
+            if ProyectoSingleton().selected_grammar != None:
+                Options().run_report()
+            else:
+                print("No ha seleccionado una gramática")
         elif option == "6":
             quit()
         self.show_menu()
