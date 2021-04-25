@@ -99,12 +99,13 @@ class Automata:
                                             if int_prod["name"] == int_rule[0]["valor"]:
                                                 for rule_searched in int_prod["rules"]:
                                                     if rule_searched[0]["valor"] == current_char:
-                                                        if len(rule_searched) > 1: # Ambiguedad de un grado
+                                                        if len(rule_searched) > 1 and rule_searched[1]["tipo"] == "terminal": # Ambiguedad de un grado
+                                                            print("Valio madre")
                                                             if rule_searched[1]["valor"] == string[i+1]:
                                                                 rule = [{
-                                                                "tipo":"no terminal",
-                                                                "valor": int_rule[0]["valor"]
-                                                            }]
+                                                                    "tipo":"no terminal",
+                                                                    "valor": int_rule[0]["valor"]
+                                                                }]
                                                         else:
                                                             rule = [{
                                                                 "tipo":"no terminal",
