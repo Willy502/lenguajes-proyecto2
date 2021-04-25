@@ -57,12 +57,12 @@ class MainMenu:
                 print("No ha seleccionado una gramática")
         elif option == "4":
             if ProyectoSingleton().selected_grammar != None:
-                Options().run_report()
+                Options().run_report(4)
             else:
                 print("No ha seleccionado una gramática")
         elif option == "5":
             if ProyectoSingleton().selected_grammar != None:
-                Options().run_report()
+                Options().run_report(5)
             else:
                 print("No ha seleccionado una gramática")
         elif option == "6":

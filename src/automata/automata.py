@@ -39,20 +39,27 @@ class Automata:
         Helper().build_html(grammar ,name_show ,file_name)
         print("Autómata de pila equivalente generado exitósamente")
 
-    def run_report(self, string):
+    def run_report(self, string, menu_option):
         grammar = ProyectoSingleton().selected_grammar
 
         i = 0
         input_length = len(string)
         stack = []
+        stack_to_print = []
         state = "i"
 
+        print(stack)
         while (i < input_length):
 
             if state == "i":
-                stack.insert(0, {
+                first_item = {
                     "tipo": "no terminal",
                     "valor": "#"
+                }
+                stack.insert(0, first_item)
+                stack_to_print.insert(0, {
+                    "pila":first_item,
+                    "entrada":string[i]
                 })
 
                 state = "p"
@@ -61,9 +68,14 @@ class Automata:
                 
             
             elif state == "p":
-                stack.insert(0, {
+                second_item = {
                     "tipo": "no terminal",
                     "valor": grammar.io
+                }
+                stack.insert(0, second_item)
+                stack_to_print.insert(0, {
+                    "pila":second_item,
+                    "entrada":string[i]
                 })
 
                 state = "q"
@@ -80,6 +92,10 @@ class Automata:
 
                             for o in reversed(range(len(produccion["rules"][0]))):
                                 stack.insert(0, produccion["rules"][0][o])
+                                stack_to_print.insert(0, {
+                                    "pila":produccion["rules"][0][o],
+                                    "entrada":string[i]
+                                })
 
                             print(stack)
                             
@@ -115,6 +131,10 @@ class Automata:
 
                             for o in reversed(range(len(rule))):
                                 stack.insert(0, rule[o])
+                                stack_to_print.insert(0, {
+                                    "pila":rule[o],
+                                    "entrada":current_char
+                                })
 
                             print(stack)
 
@@ -134,6 +154,7 @@ class Automata:
 
 
             elif state == "f":
+                print(stack)
                 print("Cadena aceptada")
                 return
 
