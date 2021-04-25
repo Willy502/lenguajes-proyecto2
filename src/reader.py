@@ -57,8 +57,8 @@ class Reader:
                     "valor": prod.strip()
                 })
 
-            if prod.strip() == name:
-                self._is_valid_gram = True
+        if productionsArray[0]["tipo"] == "no terminal":
+            self._is_valid_gram = True
 
         for grams in gramatica.producciones:
             if grams["name"] == name:
