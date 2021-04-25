@@ -44,21 +44,38 @@ class Automata:
         transiciones = Helper().build_transiciones(data, gramatica)
         label = ""
         for transicion in transiciones:
+            estado = ""
             if transicion != "(f)":
+                estado = transicion[1]
                 transicion = transicion[3:-1]
                 transicion = transicion.split(";")[0] + ";" + transicion.split(";")[1][2:]
             else:
+                estado = transicion[1]
                 transicion = transicion[1:-1]
             
-            print(transicion)
+            color = []
+            style = []
+            if estado == "i":
+                color = ["yellow", "black", "black", "black"]
+                style = ["filled", "", "", ""]
+            elif estado == "p":
+                color = ["black", "yellow", "black", "black"]
+                style = ["", "filled", "", ""]
+            elif estado == "q":
+                color = ["black", "black", "yellow", "black"]
+                style = ["", "", "filled", ""]
+            elif estado == "f":
+                color = ["black", "black", "black", "yellow"]
+                style = ["", "", "", "filled"]
+
             grammar = ProyectoSingleton().selected_grammar
-            name_show = "AP_" + grammar.name
+            name_show = "AP_" + grammar.name + "_running"
             dot = Digraph(comment=name_show, graph_attr={'rankdir':'LR', 'splines':'line'})
             dot.node("", "", color="white")
-            dot.node("i", "i", shape='circle')
-            dot.node("p", "p", shape='circle')
-            dot.node("q", "q", shape='circle')
-            dot.node("f", "f", shape='doublecircle')
+            dot.node("i", "i", shape='circle', style=style[0], color=color[0])
+            dot.node("p", "p", shape='circle', style=style[1], color=color[1])
+            dot.node("q", "q", shape='circle', style=style[2], color=color[2])
+            dot.node("f", "f", shape='doublecircle', style=style[3], color=color[3])
 
             dot.edge("", "i")
             label = "λ,λ;#"
@@ -96,7 +113,7 @@ class Automata:
                 label += " RUNNING"
             dot.edge("q", "f", label=label)
 
-            dot.render('test-output/AP_' + grammar.name + '.gv', view=False)
+            dot.render('test-output/AP_' + grammar.name + '_running.gv', view=False)
             file_name = dot.filepath + ".pdf"
             Helper().build_html(grammar ,name_show ,file_name)
             time.sleep(1)
