@@ -100,7 +100,6 @@ class Automata:
                                                 for rule_searched in int_prod["rules"]:
                                                     if rule_searched[0]["valor"] == current_char:
                                                         if len(rule_searched) > 1 and rule_searched[1]["tipo"] == "terminal": # Ambiguedad de un grado
-                                                            print("Valio madre")
                                                             if rule_searched[1]["valor"] == string[i+1]:
                                                                 rule = [{
                                                                     "tipo":"no terminal",
@@ -125,14 +124,16 @@ class Automata:
                         print(stack)
 
                     elif actual_stack_top["tipo"] == "terminal" and actual_stack_top["valor"] != string[i]:
-                        print("error")
+                        print("Cadena no aceptada, caracter no esperado: " + current_char)
                         return
                     elif actual_stack_top["tipo"] == "no terminal" and actual_stack_top["valor"] == "#":
                         stack.pop(0)
                         state = "f"
-                        print(state)
+                        i -= 1
+                        break
 
 
             elif state == "f":
-                print("Estado f")
+                print("Cadena aceptada")
+                return
 
