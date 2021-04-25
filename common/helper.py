@@ -70,10 +70,13 @@ class Helper:
             if build_string != "(f":
 
                 # Lee
+                lee = ""
                 if len(data[i]["pila"]) > 0 and data[i]["pila"][0]["tipo"] == "terminal":
-                    build_string += "," + data[i]["pila"][0]["valor"]
+                    lee = data[i]["pila"][0]["valor"]
+                    build_string += "," + lee
                 else:
-                    build_string += ",λ"
+                    lee = "λ"
+                    build_string += "," + lee
                 
                 # Saca
                 if len(data[i]["pila"]) > 0 and i != 1:
@@ -85,12 +88,35 @@ class Helper:
                 build_string += ";" + data[i + 1]["estado"]
 
                 # Ingresa
-                if len(data[i]["pila"]) > 0 and (data[i]["pila"][0]["valor"] in gramatica.terminales or (data[i]["pila"][0]["valor"] == "#" and i != 1)):
+                previous_stack = "".join([printed["valor"] for printed in reversed(data[i - 1]["pila"])])
+                actual_stack = "".join([printed["valor"] for printed in reversed(data[i]["pila"])])
+                next_stack = "".join([production_part["valor"] for production_part in reversed(data[i + 1]["pila"])])
+
+                if actual_stack == next_stack:
                     build_string += ",λ"
+                else:
+                    insert = ""
+                    if len(actual_stack) == len(next_stack):
+                        for o in range(len(actual_stack)):
+                            if actual_stack[o] != next_stack[o]:
+                                insert += next_stack[o]
+                        build_string += "," + insert
+                    elif len(actual_stack) > len(next_stack):
+                        build_string += ",λ"
+                    elif len(actual_stack) < len(next_stack):
+                        insert += ","
+                        for o in range(len(actual_stack)):
+                            if actual_stack[o] != next_stack[o]:
+                                insert += next_stack[o]
+                        
+                        for o in range(len(actual_stack), len(next_stack)):
+                            insert += next_stack[o]
+                        build_string += insert
+
+
             build_string += ")"
             transiciones.append(build_string)
 
-        print(data)
         return transiciones
 
     def build_table(self, data, gramatica):
