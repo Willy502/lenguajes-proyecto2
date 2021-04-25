@@ -48,37 +48,41 @@ class Automata:
         stack_to_print = []
         state = "i"
 
+        stack_to_print.append({
+            "pila":stack.copy(),
+            "entrada":string[i],
+            "estado":state
+        })
         print(stack)
         while (i < input_length):
 
             if state == "i":
-                first_item = {
+                state = "p"
+                stack.insert(0, {
                     "tipo": "no terminal",
                     "valor": "#"
-                }
-                stack.insert(0, first_item)
-                stack_to_print.insert(0, {
-                    "pila":first_item,
-                    "entrada":string[i]
                 })
-
-                state = "p"
+                stack_to_print.append({
+                    "pila":stack.copy(),
+                    "entrada":string[i],
+                    "estado":state
+                })
 
                 print(stack)
                 
             
             elif state == "p":
-                second_item = {
+                state = "q"
+                stack.insert(0, {
                     "tipo": "no terminal",
                     "valor": grammar.io
-                }
-                stack.insert(0, second_item)
-                stack_to_print.insert(0, {
-                    "pila":second_item,
-                    "entrada":string[i]
+                })
+                stack_to_print.append({
+                    "pila":stack.copy(),
+                    "entrada":string[i],
+                    "estado":state
                 })
 
-                state = "q"
                 print(stack)
 
             elif state == "q":
@@ -92,9 +96,10 @@ class Automata:
 
                             for o in reversed(range(len(produccion["rules"][0]))):
                                 stack.insert(0, produccion["rules"][0][o])
-                                stack_to_print.insert(0, {
-                                    "pila":produccion["rules"][0][o],
-                                    "entrada":string[i]
+                                stack_to_print.append({
+                                    "pila":stack.copy(),
+                                    "entrada":string[i],
+                                    "estado":state
                                 })
 
                             print(stack)
@@ -131,16 +136,22 @@ class Automata:
 
                             for o in reversed(range(len(rule))):
                                 stack.insert(0, rule[o])
-                                stack_to_print.insert(0, {
-                                    "pila":rule[o],
-                                    "entrada":current_char
-                                })
+                            stack_to_print.append({
+                                "pila":stack.copy(),
+                                "entrada":current_char,
+                                "estado":state
+                            })
 
                             print(stack)
 
                     elif actual_stack_top["tipo"] == "terminal" and actual_stack_top["valor"] == string[i]:
                         i += 1
                         stack.pop(0)
+                        stack_to_print.append({
+                            "pila":stack.copy(),
+                            "entrada":current_char,
+                            "estado":state
+                        })
                         print(stack)
 
                     elif actual_stack_top["tipo"] == "terminal" and actual_stack_top["valor"] != string[i]:
@@ -148,6 +159,15 @@ class Automata:
                         return
                     elif actual_stack_top["tipo"] == "no terminal" and actual_stack_top["valor"] == "#":
                         stack.pop(0)
+                        stack_to_print.pop()
+                        stack_to_print.append({
+                            "pila":[{
+                            "tipo": "no terminal",
+                            "valor": "#"
+                        }],
+                            "entrada":"λ",
+                            "estado":state
+                        })
                         state = "f"
                         i -= 1
                         break
@@ -155,6 +175,18 @@ class Automata:
 
             elif state == "f":
                 print(stack)
+                stack_to_print.append({
+                    "pila":[{
+                    "tipo": "terminal",
+                    "valor": "λ"
+                }],
+                    "entrada":"λ",
+                    "estado":state
+                })
                 print("Cadena aceptada")
+                if menu_option == 4:
+                    print("AJUA")
+                else:
+                    Helper().build_table(stack_to_print, grammar)
                 return
 

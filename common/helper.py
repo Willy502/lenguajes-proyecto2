@@ -60,3 +60,101 @@ class Helper:
         file.close()
         filename = 'file://' + os.path.realpath(file.name)
         webbrowser.open_new_tab(filename)
+
+    def build_transiciones(self, data, gramatica):
+        transiciones = []
+        for i in range(len(data)):
+            # del estado
+            build_string = "("
+            build_string += data[i]["estado"]
+            if build_string != "(f":
+
+                # Lee
+                if len(data[i]["pila"]) > 0 and data[i]["pila"][0]["tipo"] == "terminal":
+                    build_string += "," + data[i]["pila"][0]["valor"]
+                else:
+                    build_string += ",λ"
+                
+                # Saca
+                if len(data[i]["pila"]) > 0 and i != 1:
+                    build_string += "," + data[i]["pila"][0]["valor"]
+                else:
+                    build_string += ",λ"
+
+                # al estado
+                build_string += ";" + data[i + 1]["estado"]
+
+                # Ingresa
+                if len(data[i]["pila"]) > 0 and (data[i]["pila"][0]["valor"] in gramatica.terminales or (data[i]["pila"][0]["valor"] == "#" and i != 1)):
+                    build_string += ",λ"
+            build_string += ")"
+            transiciones.append(build_string)
+
+        print(data)
+        return transiciones
+
+    def build_table(self, data, gramatica):
+        lines = ''
+        contador = 0
+        transiciones = self.build_transiciones(data, gramatica)
+        for item in data:
+            #print(item)
+            lines += "<tr>\n"
+            lines += "<th scope='row'>" + str(contador) + "</th>\n"
+            build_pila = ""
+            for pila in item["pila"]:
+                build_pila += pila["valor"]
+            lines += "<td scope='col'>" + build_pila + "</td>\n"
+            lines += "<td scope='col'>" + str(item["entrada"]) + "</td>\n"
+            transicion = transiciones[contador]
+            lines += "<td scope='col'>" + transicion + "</td>\n"
+            lines += "</tr>\n"
+            contador += 1
+            
+
+        html = '''
+        <!doctype html>
+        <html lang="en">
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+            <title>Reporte de tabla</title>
+        </head>
+        <body>
+
+            <div class="container">
+                <div class="row">
+                    <br>
+                    <br>
+                    <h1>Reporte de tabla</h1>
+                    <hr>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                            <th scope="col">Iteración</th>
+                            <th scope="col">Pila</th>
+                            <th scope="col">Entrada</th>
+                            <th scope="col">Transiciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>'''
+        html += lines
+        html += '''
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+
+        </body>
+        </html>
+        '''
+        file = open('tabla.html', 'w')
+        file.write(html)
+        file.close()
+        filename = 'file://' + os.path.realpath(file.name)
+        webbrowser.open_new_tab(filename)
