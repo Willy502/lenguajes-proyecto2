@@ -116,7 +116,7 @@ class Helper:
 
             build_string += ")"
             transiciones.append(build_string)
-
+    
         return transiciones
 
     def build_table(self, data, gramatica):
