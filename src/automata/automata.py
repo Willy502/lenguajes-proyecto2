@@ -174,7 +174,7 @@ class Automata:
                     if actual_stack_top["tipo"] == "no terminal" and actual_stack_top["valor"] == produccion["name"]:
                         if len(produccion["rules"]) == 1:
                             stack.pop(0)
-
+                            
                             for o in reversed(range(len(produccion["rules"][0]))):
                                 stack.insert(0, produccion["rules"][0][o])
                                 stack_to_print.append({
@@ -230,13 +230,13 @@ class Automata:
                         stack.pop(0)
                         stack_to_print.append({
                             "pila":stack.copy(),
-                            "entrada":current_char,
+                            "entrada":string[i],
                             "estado":state
                         })
                         print(stack)
 
                     elif actual_stack_top["tipo"] == "terminal" and actual_stack_top["valor"] != string[i]:
-                        print("Cadena no aceptada, caracter no esperado: " + current_char)
+                        print("Cadena no aceptada, caracter no esperado: " + string[i])
                         return
                     elif actual_stack_top["tipo"] == "no terminal" and actual_stack_top["valor"] == "#":
                         stack.pop(0)

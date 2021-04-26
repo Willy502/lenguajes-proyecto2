@@ -39,9 +39,9 @@ class Reader:
 
     def build_productions(self, gramatica, line):
         productions = line.split("->")
-        name = productions[0]
-        production = productions[1].split(" ")
-
+        name = productions[0].replace(" ", "")
+        production = list(productions[1].replace(" ","").replace("\n", ""))
+        print(production)
         productionsArray = []
 
         for prod in production:
