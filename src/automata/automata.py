@@ -167,7 +167,9 @@ class Automata:
                 print(stack)
 
             elif state == "q":
-                print("estado q")
+                
+                stack_top = stack[0]
+                current_char = string[i]
 
 
             elif state == "f":
