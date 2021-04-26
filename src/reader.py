@@ -41,7 +41,7 @@ class Reader:
         productions = line.split("->")
         name = productions[0].replace(" ", "")
         production = list(productions[1].replace(" ","").replace("\n", ""))
-        print(production)
+        
         productionsArray = []
 
         for prod in production:
