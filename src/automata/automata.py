@@ -230,13 +230,13 @@ class Automata:
                         stack.pop(0)
                         stack_to_print.append({
                             "pila":stack.copy(),
-                            "entrada":string[i],
+                            "entrada":current_char,
                             "estado":state
                         })
                         print(stack)
 
                     elif actual_stack_top["tipo"] == "terminal" and actual_stack_top["valor"] != string[i]:
-                        print("Cadena no aceptada, caracter no esperado: " + string[i])
+                        print("Cadena no aceptada, caracter no esperado: " + current_char)
                         return
                     elif actual_stack_top["tipo"] == "no terminal" and actual_stack_top["valor"] == "#":
                         stack.pop(0)
