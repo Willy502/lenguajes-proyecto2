@@ -23,13 +23,13 @@ class Automata:
         for produccion in grammar.producciones:
             rules = produccion["rules"]
             for rule in rules:
-                label += "λ," + produccion["name"] + ";" + ','.join([str(val["valor"]) for val in rule]) + "\n"
+                label += "λ," + produccion["name"] + ";" + ''.join([str(val["valor"]) for val in rule]) + "\n"
 
         dot.edge("q:n", "q",label=label)
 
         label = ""
         for out in grammar.terminales:
-            label += out + "," + out + ",λ\n"
+            label += out + "," + out + ";λ\n"
 
         dot.edge("q:s", "q", label=label)
         
@@ -81,12 +81,12 @@ class Automata:
             dot.edge("", "i")
             label = "λ,λ;#"
             if label == transicion:
-                label += " RUNNING"
+                label += " (RUNNING)"
             dot.edge("i", "p", label=label)
 
             label = "λ,λ;" + grammar.io
             if label == transicion:
-                label += " RUNNING"
+                label += " (RUNNING)"
             dot.edge("p", "q", label=label)
 
             label = ""
@@ -95,7 +95,7 @@ class Automata:
                 for rule in rules:
                     intern_label = "λ," + produccion["name"] + ";" + ''.join([str(val["valor"]) for val in rule])
                     if intern_label == transicion:
-                        intern_label += " RUNNING"
+                        intern_label += " (RUNNING)"
                     label += intern_label + "\n"
 
             dot.edge("q:n", "q",label=label)
@@ -104,14 +104,14 @@ class Automata:
             for out in grammar.terminales:
                 intern_label = out + "," + out + ";λ"
                 if intern_label == transicion:
-                    intern_label += " RUNNING"
+                    intern_label += " (RUNNING)"
                 label += intern_label + "\n"
 
             dot.edge("q:s", "q", label=label)
             
             label = "λ,#;λ"
             if label == transicion:
-                label += " RUNNING"
+                label += " (RUNNING)"
             dot.edge("q", "f", label=label)
 
             dot.render('test-output/AP_' + grammar.name + '_running.gv', view=False)

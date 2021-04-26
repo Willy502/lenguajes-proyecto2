@@ -33,11 +33,11 @@ class Reader:
                     line_of_gram = 1 
                     self._is_valid_gram = False
                 else: # Producciones
-                    self.buildProductions(gramatica, line)
+                    self.build_productions(gramatica, line)
             
             ProyectoSingleton().gramaticas = arrayGramatica
 
-    def buildProductions(self, gramatica, line):
+    def build_productions(self, gramatica, line):
         productions = line.split("->")
         name = productions[0]
         production = productions[1].split(" ")
