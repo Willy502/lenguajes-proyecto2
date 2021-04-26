@@ -184,10 +184,10 @@ class Automata:
 
                 elif stack_top["tipo"] == "no terminal":
                     print("Soy no terminal, hay que buscar")
-                    
+
                     for produccion in grammar.producciones:
                         if stack_top["valor"] == produccion["name"]:
-                            print("Encontre la produccion")
+                            print("Encontre la produccion") # Hacer una función recursiva para continuar con la búsqueda
                     return
 
 
