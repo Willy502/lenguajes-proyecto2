@@ -3,13 +3,30 @@ import os
 
 class Helper:
 
-    def build_html(self, gramatica, name, pdf):
+    def build_html(self, gramatica, name, pdf, running, data):
 
         info1 = "Terminales = { " + ','.join([str(l) for l in gramatica.terminales]) + " }\n"
         info2 = "Alfabeto de la pila = { " + ','.join([str(l) for l in gramatica.terminales]) + "," + ','.join([str(l) for l in gramatica.nterminales]) + ",# }\n"
         info3 = "Estados = { i,p,q,f }\n"
         info4 = "Estado Inicial = { i }\n"
         info5 = "Estado de aceptación = { f }\n"
+
+        report = ''
+        if running:
+            report += '<div class="col-4">\n'
+            report += '<table class="table">\n'
+            report += '<tbody>\n'
+            report += "<tr>\n"
+            report += "<td scope='col'>Pila</td>\n"
+            report += "<td scope='col'>" + "".join([pila["valor"] for pila in data["pila"]]) + "</td>\n"
+            report += "</tr>\n"
+            report += "<tr>\n"
+            report += "<td scope='col'>Entrada</td>\n"
+            report += "<td scope='col'>" + data["entrada"] + "</td>\n"
+            report += "</tr>\n"
+            report += '</tbody>\n'
+            report += '</table>\n'
+            report += '</div>\n'
 
         html = '''<!doctype html>
             <html lang="en">
@@ -28,7 +45,7 @@ class Helper:
                     html, body {
                         height: 100%;
                     }
-                    h1, p {
+                    h1, p, td {
                         color: #fff;
                     }
                 </style>
@@ -42,12 +59,15 @@ class Helper:
                         <div class="col-8 offset-2">
                             <embed class="col-12" type="application/pdf" src="''' + pdf + '''" height="500px">
                         </div>
-                        <div class="col-8 offset-2">
-                            <p>''' + info1 + '''</p>
-                            <p>''' + info2 + '''</p>
-                            <p>''' + info3 + '''</p>
-                            <p>''' + info4 + '''</p>
-                            <p>''' + info5 + '''</p>
+                        <div class="row">
+                            <div class="col-4 offset-2">
+                                <p>''' + info1 + '''</p>
+                                <p>''' + info2 + '''</p>
+                                <p>''' + info3 + '''</p>
+                                <p>''' + info4 + '''</p>
+                                <p>''' + info5 + '''</p>
+                            </div>
+                            ''' + report + '''
                         </div>
                     </div>
                 </div>

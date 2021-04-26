@@ -37,12 +37,13 @@ class Automata:
 
         dot.render('test-output/AP_' + grammar.name + '.gv', view=False)
         file_name = dot.filepath + ".pdf"
-        Helper().build_html(grammar ,name_show ,file_name)
+        Helper().build_html(grammar ,name_show ,file_name, False, None)
         print("Autómata de pila equivalente generado exitósamente")
 
     def build_automata_running(self, data, gramatica):
         transiciones = Helper().build_transiciones(data, gramatica)
         label = ""
+        contador = 0
         for transicion in transiciones:
             estado = ""
             if transicion != "(f)":
@@ -115,8 +116,9 @@ class Automata:
 
             dot.render('test-output/AP_' + grammar.name + '_running.gv', view=False)
             file_name = dot.filepath + ".pdf"
-            Helper().build_html(grammar ,name_show ,file_name)
+            Helper().build_html(grammar ,name_show ,file_name, True, data[contador])
             time.sleep(1)
+            contador += 1
 
     def run_report(self, string, menu_option):
         grammar = ProyectoSingleton().selected_grammar
