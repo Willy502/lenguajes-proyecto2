@@ -171,6 +171,25 @@ class Automata:
                 stack_top = stack[0]
                 current_char = string[i]
 
+                if stack_top["tipo"] == "terminal" and stack_top["valor"] == current_char:
+                    stack.pop(0)
+                    i += 1
+                
+                elif stack_top["tipo"] == "terminal" and stack_top["valor"] != current_char:
+                    print("Cadena inválida, caracter no esperado: " + current_char)
+                    return
+                
+                elif stack_top["tipo"] == "no terminal" and stack_top["valor"] == "#":
+                    state = "f" # Me aceptaron
+
+                elif stack_top["tipo"] == "no terminal":
+                    print("Soy no terminal, hay que buscar")
+                    
+                    for produccion in grammar.producciones:
+                        if stack_top["valor"] == produccion["name"]:
+                            print("Encontre la produccion")
+                    return
+
 
             elif state == "f":
                 print(stack)
