@@ -186,6 +186,9 @@ class Automata:
                         state = "f" # Me aceptaron
                     else:
                         i += 1
+                        if i >= input_length:
+                            print("Cadena incompleta, se esperaban más caracteres")
+                        
                     #if i == 3:
                         #return
                 
