@@ -173,23 +173,31 @@ class Automata:
 
                 if stack_top["tipo"] == "terminal" and stack_top["valor"] == current_char:
                     stack.pop(0)
-                    i += 1
+                    stack_to_print.append({
+                        "pila":stack.copy(),
+                        "entrada":current_char,
+                        "estado":state
+                    })
+                    print(stack)
+
+                    stack_top = stack[0]
+
+                    if stack_top["tipo"] == "no terminal" and stack_top["valor"] == "#":
+                        state = "f" # Me aceptaron
+                    else:
+                        i += 1
+                    #if i == 3:
+                        #return
                 
                 elif stack_top["tipo"] == "terminal" and stack_top["valor"] != current_char:
                     print("Cadena inválida, caracter no esperado: " + current_char)
                     return
-                
-                elif stack_top["tipo"] == "no terminal" and stack_top["valor"] == "#":
-                    state = "f" # Me aceptaron
 
                 elif stack_top["tipo"] == "no terminal":
                     print("Soy no terminal, hay que buscar")
-
-                    for produccion in grammar.producciones:
-                        if stack_top["valor"] == produccion["name"]:
-                            print("Encontre la produccion") # Hacer una función recursiva para continuar con la búsqueda
-                    return
-
+                    self.terminal_search(grammar.producciones, stack_top, stack_top.copy(), stack, stack_to_print, current_char, [], state)
+                    continue
+                    
 
             elif state == "f":
                 print(stack)
@@ -207,4 +215,36 @@ class Automata:
                 else:
                     Helper().build_table(stack_to_print, grammar)
                 return
+    
+    def terminal_search(self, producciones, original_stack_top, stack_top, stack, stack_to_print, entrada, next_rules, state):
+        #print("NEXT")
+        #print(next_rules)
+        for produccion in producciones:
+            if stack_top["valor"] == produccion["name"]:
+                #stack.pop(0)
+                #print("STACKER")
+                #print(stack_top)
+                for rule in produccion["rules"]:
+                    #print("RULE")
+                    #print(rule)
+                    if rule[0]["tipo"] == "no terminal":
+                        if next_rules == []:
+                            next_rules = rule
+                        self.terminal_search(producciones, original_stack_top, rule[0], stack, stack_to_print, entrada, next_rules, state)
+                    elif rule[0]["tipo"] == "terminal" and rule[0]["valor"] == entrada:
+                        if next_rules == []:
+                            next_rules = rule
+                        #print("Llegue aca")
+                        #print(next_rules)
+                        stack.pop(0)
+                        for o in reversed(range(len(next_rules))):
+                            stack.insert(0, next_rules[o])
+                        stack_to_print.append({
+                            "pila":stack.copy(),
+                            "entrada":entrada,
+                            "estado":state
+                        })
+                        original_stack_top = stack[0]
+                        print(stack)
+                        return
 
