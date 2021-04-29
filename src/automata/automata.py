@@ -198,18 +198,13 @@ class Automata:
                             "estado":state
                         })
 
-                    
                     print(stack)
-                        
-                    #if i == 3:
-                        #return
                 
                 elif stack_top["tipo"] == "terminal" and stack_top["valor"] != current_char:
                     print("Cadena inválida, caracter no esperado: " + current_char)
                     return
 
                 elif stack_top["tipo"] == "no terminal":
-                    #print("Soy no terminal, hay que buscar")
                     self.terminal_search(grammar.producciones, stack_top, stack_top.copy(), stack, stack_to_print, current_char, [], state)
                     continue
                     
@@ -232,17 +227,13 @@ class Automata:
                 return
     
     def terminal_search(self, producciones, original_stack_top, stack_top, stack, stack_to_print, entrada, next_rules, state):
-        #print("NEXT")
-        #print(next_rules)
+
         for produccion in producciones:
             if stack_top["valor"] == produccion["name"]:
-                #stack.pop(0)
-                #print("STACKER")
-                #print(stack_top)
+
                 rule_length = len(produccion["rules"])
                 for rule in produccion["rules"]:
-                    #print("RULE")
-                    #print(rule)
+
                     if rule[0]["tipo"] == "no terminal":
 
                         if next_rules == []:
@@ -258,8 +249,7 @@ class Automata:
                     elif rule[0]["tipo"] == "terminal" and rule[0]["valor"] == entrada:
                         if next_rules == []:
                             next_rules = rule
-                        #print("Llegue aca")
-                        #print(next_rules)
+
                         stack.pop(0)
                         for o in reversed(range(len(next_rules))):
                             stack.insert(0, next_rules[o])
@@ -280,5 +270,3 @@ class Automata:
                         self.forze_error = True
                         return
                     
-                    
-
