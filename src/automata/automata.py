@@ -5,6 +5,8 @@ import time
 
 class Automata:
 
+    forze_error = False
+
     def build_equivalent_automata(self):
         grammar = ProyectoSingleton().selected_grammar
         name_show = "AP_" + grammar.name
@@ -122,7 +124,7 @@ class Automata:
 
     def run_report(self, string, menu_option):
         grammar = ProyectoSingleton().selected_grammar
-
+        
         i = 0
         input_length = len(string)
         stack = []
@@ -171,7 +173,10 @@ class Automata:
                 stack_top = stack[0]
                 current_char = string[i]
 
-                if stack_top["tipo"] == "terminal" and stack_top["valor"] == current_char:
+                if self.forze_error == True:
+                    return
+
+                elif stack_top["tipo"] == "terminal" and stack_top["valor"] == current_char:
                     stack.pop(0)
                     stack_to_print.append({
                         "pila":stack.copy(),
@@ -227,12 +232,17 @@ class Automata:
                 #stack.pop(0)
                 #print("STACKER")
                 #print(stack_top)
+                rule_length = len(produccion["rules"])
                 for rule in produccion["rules"]:
                     #print("RULE")
                     #print(rule)
                     if rule[0]["tipo"] == "no terminal":
                         if next_rules == []:
                             next_rules = rule
+                        if rule_length == len(produccion["rules"]) and next_rules == []:
+                            print("Caracter no esperado")
+                            self.forze_error = True
+                            return
                         self.terminal_search(producciones, original_stack_top, rule[0], stack, stack_to_print, entrada, next_rules, state)
                     elif rule[0]["tipo"] == "terminal" and rule[0]["valor"] == entrada:
                         if next_rules == []:
@@ -250,4 +260,6 @@ class Automata:
                         original_stack_top = stack[0]
                         print(stack)
                         return
+                    
+                    
 
