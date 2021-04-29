@@ -178,21 +178,28 @@ class Automata:
 
                 elif stack_top["tipo"] == "terminal" and stack_top["valor"] == current_char:
                     stack.pop(0)
-                    stack_to_print.append({
-                        "pila":stack.copy(),
-                        "entrada":current_char,
-                        "estado":state
-                    })
-                    print(stack)
 
                     stack_top = stack[0]
 
                     if stack_top["tipo"] == "no terminal" and stack_top["valor"] == "#":
                         state = "f" # Me aceptaron
+                        stack_to_print.append({
+                            "pila":stack.copy(),
+                            "entrada": "λ",
+                            "estado":state
+                        })
                     else:
                         i += 1
                         if i >= input_length:
                             print("Cadena incompleta, se esperaban más caracteres")
+                        stack_to_print.append({
+                            "pila":stack.copy(),
+                            "entrada": string[i],
+                            "estado":state
+                        })
+
+                    
+                    print(stack)
                         
                     #if i == 3:
                         #return
@@ -202,7 +209,7 @@ class Automata:
                     return
 
                 elif stack_top["tipo"] == "no terminal":
-                    print("Soy no terminal, hay que buscar")
+                    #print("Soy no terminal, hay que buscar")
                     self.terminal_search(grammar.producciones, stack_top, stack_top.copy(), stack, stack_to_print, current_char, [], state)
                     continue
                     
@@ -237,13 +244,17 @@ class Automata:
                     #print("RULE")
                     #print(rule)
                     if rule[0]["tipo"] == "no terminal":
+
                         if next_rules == []:
                             next_rules = rule
+
                         if rule_length == len(produccion["rules"]) and next_rules == []:
                             print("Caracter no esperado")
                             self.forze_error = True
                             return
+
                         self.terminal_search(producciones, original_stack_top, rule[0], stack, stack_to_print, entrada, next_rules, state)
+
                     elif rule[0]["tipo"] == "terminal" and rule[0]["valor"] == entrada:
                         if next_rules == []:
                             next_rules = rule
@@ -252,13 +263,21 @@ class Automata:
                         stack.pop(0)
                         for o in reversed(range(len(next_rules))):
                             stack.insert(0, next_rules[o])
+
                         stack_to_print.append({
                             "pila":stack.copy(),
                             "entrada":entrada,
                             "estado":state
                         })
+
                         original_stack_top = stack[0]
                         print(stack)
+                        return
+
+                    elif rule[0]["tipo"] == "terminal" and rule[0]["valor"] != entrada and rule_length == len(produccion["rules"]) and next_rules != []:
+                        print(stack)
+                        print("Cadena inválida, caracter no esperado: " + entrada)
+                        self.forze_error = True
                         return
                     
                     
