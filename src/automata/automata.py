@@ -173,6 +173,10 @@ class Automata:
                 stack_top = stack[0]
                 current_char = string[i]
 
+                if current_char not in grammar.terminales:
+                    print("Caracter no permitido: " + current_char)
+                    self.forze_error = True
+
                 if self.forze_error == True:
                     return
 
@@ -190,11 +194,13 @@ class Automata:
                         })
                     else:
                         i += 1
+                        temp = i
                         if i >= input_length:
                             print("Cadena incompleta, se esperaban más caracteres")
+                            temp -= 1
                         stack_to_print.append({
                             "pila":stack.copy(),
-                            "entrada": string[i],
+                            "entrada": string[temp],
                             "estado":state
                         })
 
@@ -205,7 +211,7 @@ class Automata:
                     return
 
                 elif stack_top["tipo"] == "no terminal":
-                    self.terminal_search(grammar.producciones, stack_top, stack_top.copy(), stack, stack_to_print, current_char, [], state)
+                    self.terminal_search(grammar.producciones, stack_top, stack_top.copy(), stack, stack_to_print, string, i, [], state)
                     continue
                     
 
@@ -226,35 +232,64 @@ class Automata:
                     Helper().build_table(stack_to_print, grammar)
                 return
     
-    def terminal_search(self, producciones, original_stack_top, stack_top, stack, stack_to_print, entrada, next_rules, state):
+    def terminal_search(self, producciones, original_stack_top, stack_top, stack, stack_to_print, string, position, next_rules, state):
+
+        entrada = string[position]
 
         for produccion in producciones:
             if stack_top["valor"] == produccion["name"]:
 
-                rules = produccion["rules"]
-                rule_length = len(rules)
+                rules = []
 
                 # Check ambiguity
+                for rule in produccion["rules"]:
+                    if rule[0]["tipo"] == "terminal" and rule[0]["valor"] == entrada:
+                        rules.append(rule)
+                    elif rule[0]["tipo"] == "no terminal":
+                        rules.append(rule)
                 
+                rule_length = len(rules)
 
+                for pos in range(rule_length):
 
-                for i in range(rule_length):
-
-                    rule = rules[i]
+                    rule = rules[pos]
 
                     if rule[0]["tipo"] == "no terminal":
-
+                        #print(rule)
                         if next_rules == []:
                             next_rules = rule
 
-                        if i == rule_length and next_rules == []:
+                        if pos == rule_length and next_rules == []:
                             print("Caracter no esperado")
                             self.forze_error = True
                             return
 
-                        self.terminal_search(producciones, original_stack_top, rule[0], stack, stack_to_print, entrada, next_rules, state)
+                        self.terminal_search(producciones, original_stack_top, rule[0], stack, stack_to_print, string, position, next_rules, state)
 
                     elif rule[0]["tipo"] == "terminal" and rule[0]["valor"] == entrada:
+
+                        ambiguity_rules = []
+                        for internal_rule in rules:
+                            if internal_rule[0]["valor"] == entrada:
+                                ambiguity_rules.append(internal_rule)
+
+                        if len(ambiguity_rules) > 1:
+                            print("AMBIGUEDAD")
+                            if position == len(string) - 1: # Cadena terminada
+                                for ambiguity_rule in ambiguity_rules:
+                                    if len(ambiguity_rule) == 1:
+                                        rule = ambiguity_rule
+                            else:
+                                next_character = string[position + 1]
+                                for ambiguity_rule in ambiguity_rules:
+                                    if len(ambiguity_rule) > 1:
+                                        if ambiguity_rule[1]["tipo"] == "terminal" and ambiguity_rule[1]["valor"] == next_character:
+                                            rule = ambiguity_rule
+                                            break
+                                        
+
+
+
                         if next_rules == []:
                             next_rules = rule
 
@@ -268,11 +303,10 @@ class Automata:
                             "estado":state
                         })
 
-                        original_stack_top = stack[0]
                         print(stack)
                         return
 
-                    elif rule[0]["tipo"] == "terminal" and rule[0]["valor"] != entrada and i == rule_length and next_rules != []:
+                    elif rule[0]["tipo"] == "terminal" and rule[0]["valor"] != entrada and pos == rule_length and next_rules != []:
                         print(stack)
                         print("Cadena inválida, caracter no esperado: " + entrada)
                         self.forze_error = True
