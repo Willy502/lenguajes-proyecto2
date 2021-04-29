@@ -231,15 +231,23 @@ class Automata:
         for produccion in producciones:
             if stack_top["valor"] == produccion["name"]:
 
-                rule_length = len(produccion["rules"])
-                for rule in produccion["rules"]:
+                rules = produccion["rules"]
+                rule_length = len(rules)
+
+                # Check ambiguity
+                
+
+
+                for i in range(rule_length):
+
+                    rule = rules[i]
 
                     if rule[0]["tipo"] == "no terminal":
 
                         if next_rules == []:
                             next_rules = rule
 
-                        if rule_length == len(produccion["rules"]) and next_rules == []:
+                        if i == rule_length and next_rules == []:
                             print("Caracter no esperado")
                             self.forze_error = True
                             return
@@ -264,7 +272,7 @@ class Automata:
                         print(stack)
                         return
 
-                    elif rule[0]["tipo"] == "terminal" and rule[0]["valor"] != entrada and rule_length == len(produccion["rules"]) and next_rules != []:
+                    elif rule[0]["tipo"] == "terminal" and rule[0]["valor"] != entrada and i == rule_length and next_rules != []:
                         print(stack)
                         print("Cadena inválida, caracter no esperado: " + entrada)
                         self.forze_error = True
