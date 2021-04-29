@@ -281,14 +281,22 @@ class Automata:
                                         rule = ambiguity_rule
                             else:
                                 next_character = string[position + 1]
+                                rule = []
                                 for ambiguity_rule in ambiguity_rules:
+
                                     if len(ambiguity_rule) > 1:
                                         if ambiguity_rule[1]["tipo"] == "terminal" and ambiguity_rule[1]["valor"] == next_character:
                                             rule = ambiguity_rule
                                             break
-                                        
+                                        else:
+                                            for int_prod in producciones:
+                                                if int_prod["name"] == ambiguity_rule[1]["valor"]:
+                                                    for int_rule in int_prod["rules"]:
+                                                        if int_rule[0]["valor"] == next_character:
+                                                            rule = ambiguity_rule
 
-
+                                    if len(ambiguity_rule) == 1 and rule == []:
+                                        rule = ambiguity_rule
 
                         if next_rules == []:
                             next_rules = rule
