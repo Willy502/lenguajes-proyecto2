@@ -3,7 +3,7 @@ import os
 
 class Helper:
 
-    def build_html(self, gramatica, name, pdf, running, data):
+    def build_html(self, gramatica, name, pdf, running, data, reason):
 
         info1 = "Terminales = { " + ','.join([str(l) for l in gramatica.terminales]) + " }\n"
         info2 = "Alfabeto de la pila = { " + ','.join([str(l) for l in gramatica.terminales]) + "," + ','.join([str(l) for l in gramatica.nterminales]) + ",# }\n"
@@ -24,6 +24,11 @@ class Helper:
             report += "<td scope='col'>Entrada</td>\n"
             report += "<td scope='col'>" + data["entrada"] + "</td>\n"
             report += "</tr>\n"
+            if reason is not None:
+                report += "<tr>\n"
+                report += "<td scope='col'>Descripción</td>\n"
+                report += "<td scope='col'>" + reason + "</td>\n"
+                report += "</tr>\n"
             report += '</tbody>\n'
             report += '</table>\n'
             report += '</div>\n'
@@ -141,7 +146,7 @@ class Helper:
         
         return transiciones
 
-    def build_table(self, data, gramatica):
+    def build_table(self, data, gramatica, reason):
         lines = ''
         contador = 0
         transiciones = self.build_transiciones(data, gramatica)
@@ -193,6 +198,7 @@ class Helper:
         html += '''
                         </tbody>
                     </table>
+                    <p>''' + reason + '''<p>
                 </div>
             </div>
             
