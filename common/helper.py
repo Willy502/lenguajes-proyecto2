@@ -57,10 +57,12 @@ class Helper:
             </head>
             <body>
             <br />
-            <h1>Nombre: ''' + name + '''</h1>
-            <hr />
                 <div class="container">
                     <div class="row">
+                        <div class="col-8 offset-2">
+                            <h1>Nombre: ''' + name + '''</h1>
+                        </div>
+                        <hr />
                         <div class="col-8 offset-2">
                             <embed class="col-12" type="application/pdf" src="''' + pdf + '''" height="500px">
                         </div>
