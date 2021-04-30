@@ -105,12 +105,14 @@ class Helper:
                     build_string += ",λ"
 
                 # al estado
-                build_string += ";" + data[i + 1]["estado"]
+                temp = (i + 1) if i < len(data) - 1 else i
+                build_string += ";" + data[temp]["estado"]
 
                 # Ingresa
                 previous_stack = "".join([printed["valor"] for printed in reversed(data[i - 1]["pila"])])
                 actual_stack = "".join([printed["valor"] for printed in reversed(data[i]["pila"])])
-                next_stack = "".join([production_part["valor"] for production_part in reversed(data[i + 1]["pila"])])
+                temp = (i + 1) if i < len(data) - 1 else i
+                next_stack = "".join([production_part["valor"] for production_part in reversed(data[temp]["pila"])])
 
                 if actual_stack == next_stack:
                     build_string += ",λ"

@@ -178,6 +178,7 @@ class Automata:
                     self.forze_error = True
 
                 if self.forze_error == True:
+                    self.run_realtime(menu_option, stack_to_print, grammar)
                     return
 
                 elif stack_top["tipo"] == "terminal" and stack_top["valor"] == current_char:
@@ -203,11 +204,14 @@ class Automata:
                             "entrada": string[temp],
                             "estado":state
                         })
+                        if i >= input_length:
+                            self.run_realtime(menu_option, stack_to_print, grammar)
 
                     print(stack)
                 
                 elif stack_top["tipo"] == "terminal" and stack_top["valor"] != current_char:
                     print("Cadena inválida, caracter no esperado: " + current_char)
+                    self.run_realtime(menu_option, stack_to_print, grammar)
                     return
 
                 elif stack_top["tipo"] == "no terminal":
@@ -226,10 +230,7 @@ class Automata:
                     "estado":state
                 })
                 print("Cadena aceptada")
-                if menu_option == 4:
-                    self.build_automata_running(stack_to_print, grammar)
-                else:
-                    Helper().build_table(stack_to_print, grammar)
+                self.run_realtime(menu_option, stack_to_print, grammar)
                 return
     
     def terminal_search(self, producciones, original_stack_top, stack_top, stack, stack_to_print, string, position, next_rules, state):
@@ -260,7 +261,7 @@ class Automata:
                             next_rules = rule
 
                         if pos == rule_length and next_rules == []:
-                            print("Caracter no esperado")
+                            print("Caracter no esperado") # TODO: self.run_realtime(menu_option, stack_to_print, grammar)
                             self.forze_error = True
                             return
 
@@ -319,4 +320,10 @@ class Automata:
                         print("Cadena inválida, caracter no esperado: " + entrada)
                         self.forze_error = True
                         return
+
+    def run_realtime(self, menu_option, stack_to_print, grammar):
+        if menu_option == 4:
+            self.build_automata_running(stack_to_print, grammar)
+        else:
+            Helper().build_table(stack_to_print, grammar)
                     
