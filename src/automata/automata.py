@@ -174,18 +174,18 @@ class Automata:
                 current_char = string[i]
 
                 if current_char not in grammar.terminales:
-                    print("Caracter no permitido: " + current_char)
                     self.forze_error = True
 
                 if self.forze_error == True:
-                    self.run_realtime(menu_option, stack_to_print, grammar)
+                    # Caracter no permitido
+                    self.run_realtime(menu_option, stack_to_print, grammar, "Caracter no permitido: " + current_char)
                     return
 
                 elif stack_top["tipo"] == "terminal" and stack_top["valor"] == current_char:
                     stack.pop(0)
 
                     stack_top = stack[0]
-
+                    print(stack)
                     if stack_top["tipo"] == "no terminal" and stack_top["valor"] == "#":
                         state = "f" # Me aceptaron
                         stack_to_print.append({
@@ -197,25 +197,25 @@ class Automata:
                         i += 1
                         temp = i
                         if i >= input_length:
-                            print("Cadena incompleta, se esperaban más caracteres")
                             temp -= 1
+
                         stack_to_print.append({
                             "pila":stack.copy(),
                             "entrada": string[temp],
                             "estado":state
                         })
-                        if i >= input_length:
-                            self.run_realtime(menu_option, stack_to_print, grammar)
 
-                    print(stack)
+                        if i >= input_length:
+                            # Cadena incompleta, se esperaban más caracteres
+                            self.run_realtime(menu_option, stack_to_print, grammar, "Cadena incompleta, se esperaban más caracteres")
                 
                 elif stack_top["tipo"] == "terminal" and stack_top["valor"] != current_char:
-                    print("Cadena inválida, caracter no esperado: " + current_char)
-                    self.run_realtime(menu_option, stack_to_print, grammar)
+                    # Cadena inválida, caracter no esperado
+                    self.run_realtime(menu_option, stack_to_print, grammar, "Cadena inválida, caracter no esperado: " + current_char)
                     return
 
                 elif stack_top["tipo"] == "no terminal":
-                    self.terminal_search(grammar.producciones, stack_top, stack_top.copy(), stack, stack_to_print, string, i, [], state)
+                    self.terminal_search(grammar.producciones, stack_top.copy(), stack, stack_to_print, string, i, [], state, menu_option)
                     continue
                     
 
@@ -229,12 +229,12 @@ class Automata:
                     "entrada":"λ",
                     "estado":state
                 })
-                print("Cadena aceptada")
-                self.run_realtime(menu_option, stack_to_print, grammar)
+                # Cadena aceptada
+                self.run_realtime(menu_option, stack_to_print, grammar, "Cadena aceptada")
                 return
     
-    def terminal_search(self, producciones, original_stack_top, stack_top, stack, stack_to_print, string, position, next_rules, state):
-
+    def terminal_search(self, producciones, stack_top, stack, stack_to_print, string, position, next_rules, state, menu_option):
+        grammar = ProyectoSingleton().selected_grammar
         entrada = string[position]
 
         for produccion in producciones:
@@ -261,11 +261,12 @@ class Automata:
                             next_rules = rule
 
                         if pos == rule_length and next_rules == []:
-                            print("Caracter no esperado") # TODO: self.run_realtime(menu_option, stack_to_print, grammar)
+                            # Caracter no esperado
+                            self.run_realtime(menu_option, stack_to_print, grammar, "Caracter no esperado: " + entrada)
                             self.forze_error = True
                             return
 
-                        self.terminal_search(producciones, original_stack_top, rule[0], stack, stack_to_print, string, position, next_rules, state)
+                        self.terminal_search(producciones, rule[0], stack, stack_to_print, string, position, next_rules, state, menu_option)
 
                     elif rule[0]["tipo"] == "terminal" and rule[0]["valor"] == entrada:
 
@@ -275,7 +276,7 @@ class Automata:
                                 ambiguity_rules.append(internal_rule)
 
                         if len(ambiguity_rules) > 1:
-                            print("AMBIGUEDAD")
+                            # AMBIGUEDAD
                             if position == len(string) - 1: # Cadena terminada
                                 for ambiguity_rule in ambiguity_rules:
                                     if len(ambiguity_rule) == 1:
@@ -316,12 +317,12 @@ class Automata:
                         return
 
                     elif rule[0]["tipo"] == "terminal" and rule[0]["valor"] != entrada and pos == rule_length and next_rules != []:
-                        print(stack)
-                        print("Cadena inválida, caracter no esperado: " + entrada)
+                        print(stack) # Cadena invalida, caracter no esperado
                         self.forze_error = True
                         return
 
-    def run_realtime(self, menu_option, stack_to_print, grammar):
+    def run_realtime(self, menu_option, stack_to_print, grammar, reason):
+        print(reason)
         if menu_option == 4:
             self.build_automata_running(stack_to_print, grammar)
         else:
