@@ -185,7 +185,7 @@ class Automata:
                     stack.pop(0)
 
                     stack_top = stack[0]
-                    print(stack)
+    
                     if stack_top["tipo"] == "no terminal" and stack_top["valor"] == "#":
                         state = "f" # Me aceptaron
                         stack_to_print.append({
@@ -215,7 +215,14 @@ class Automata:
                     return
 
                 elif stack_top["tipo"] == "no terminal":
+                    
+                    original_stack = stack.copy()
+
                     self.terminal_search(grammar.producciones, stack_top.copy(), stack, stack_to_print, string, i, [], state, menu_option)
+
+                    if original_stack == stack:
+                        # Caracter no esperado
+                        self.forze_error = True
                     continue
                     
 
@@ -256,11 +263,11 @@ class Automata:
                     rule = rules[pos]
 
                     if rule[0]["tipo"] == "no terminal":
-                        #print(rule)
+                        print(stack)
                         if next_rules == []:
                             next_rules = rule
 
-                        if pos == rule_length and next_rules == []:
+                        if pos == rule_length - 1 and next_rules == []:
                             # Caracter no esperado
                             self.run_realtime(menu_option, stack_to_print, grammar, "Caracter no esperado: " + entrada)
                             self.forze_error = True
@@ -269,7 +276,6 @@ class Automata:
                         self.terminal_search(producciones, rule[0], stack, stack_to_print, string, position, next_rules, state, menu_option)
 
                     elif rule[0]["tipo"] == "terminal" and rule[0]["valor"] == entrada:
-
                         ambiguity_rules = []
                         for internal_rule in rules:
                             if internal_rule[0]["valor"] == entrada:
@@ -322,7 +328,6 @@ class Automata:
                         return
 
     def run_realtime(self, menu_option, stack_to_print, grammar, reason):
-        print(reason)
         if menu_option == 4:
             self.build_automata_running(stack_to_print, grammar, reason)
         else:
