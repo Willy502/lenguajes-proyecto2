@@ -5,6 +5,8 @@ import time
 
 class Automata:
 
+    forze_error = False
+
     def build_equivalent_automata(self):
         grammar = ProyectoSingleton().selected_grammar
         name_show = "AP_" + grammar.name
@@ -37,10 +39,10 @@ class Automata:
 
         dot.render('test-output/AP_' + grammar.name + '.gv', view=False)
         file_name = dot.filepath + ".pdf"
-        Helper().build_html(grammar ,name_show ,file_name, False, None)
+        Helper().build_html(grammar ,name_show ,file_name, False, None, None)
         print("Autómata de pila equivalente generado exitósamente")
 
-    def build_automata_running(self, data, gramatica):
+    def build_automata_running(self, data, gramatica, reason):
         transiciones = Helper().build_transiciones(data, gramatica)
         label = ""
         contador = 0
@@ -116,13 +118,13 @@ class Automata:
 
             dot.render('test-output/AP_' + grammar.name + '_running.gv', view=False)
             file_name = dot.filepath + ".pdf"
-            Helper().build_html(grammar ,name_show ,file_name, True, data[contador])
+            Helper().build_html(grammar ,name_show ,file_name, True, data[contador], reason)
             time.sleep(1)
             contador += 1
 
     def run_report(self, string, menu_option):
         grammar = ProyectoSingleton().selected_grammar
-
+        
         i = 0
         input_length = len(string)
         stack = []
@@ -167,92 +169,62 @@ class Automata:
                 print(stack)
 
             elif state == "q":
-                for produccion in grammar.producciones:
-                    actual_stack_top = stack[0]
-                    #print (actual_stack_top)
-                    #print(produccion)
-                    if actual_stack_top["tipo"] == "no terminal" and actual_stack_top["valor"] == produccion["name"]:
-                        if len(produccion["rules"]) == 1:
-                            stack.pop(0)
-                            
-                            for o in reversed(range(len(produccion["rules"][0]))):
-                                stack.insert(0, produccion["rules"][0][o])
-                                stack_to_print.append({
-                                    "pila":stack.copy(),
-                                    "entrada":string[i],
-                                    "estado":state
-                                })
+                
+                stack_top = stack[0]
+                current_char = string[i]
 
-                            print(stack)
-                            
-                            
-                        else:
-                            rule = {}
-                            current_char = string[i]
-                            for current_rule in produccion["rules"]:
-                                if current_rule[0]["valor"] == current_char:
-                                    rule = current_rule
-                                
-                            if rule == {}:
+                if current_char not in grammar.terminales:
+                    self.forze_error = True
 
-                                for int_rule in produccion["rules"]:
-                                    if int_rule[0]["valor"] in grammar.nterminales:
-                                        for int_prod in grammar.producciones:
-                                            if int_prod["name"] == int_rule[0]["valor"]:
-                                                for rule_searched in int_prod["rules"]:
-                                                    if rule_searched[0]["valor"] == current_char:
-                                                        if len(rule_searched) > 1 and rule_searched[1]["tipo"] == "terminal": # Ambiguedad de un grado
-                                                            if rule_searched[1]["valor"] == string[i+1]:
-                                                                rule = [{
-                                                                    "tipo":"no terminal",
-                                                                    "valor": int_rule[0]["valor"]
-                                                                }]
-                                                        else:
-                                                            rule = [{
-                                                                "tipo":"no terminal",
-                                                                "valor": int_rule[0]["valor"]
-                                                            }]
+                if self.forze_error == True:
+                    # Caracter no permitido
+                    self.run_realtime(menu_option, stack_to_print, grammar, "Caracter no permitido: " + current_char)
+                    return
 
-                            stack.pop(0)
+                elif stack_top["tipo"] == "terminal" and stack_top["valor"] == current_char:
+                    stack.pop(0)
 
-                            for o in reversed(range(len(rule))):
-                                stack.insert(0, rule[o])
-                            stack_to_print.append({
-                                "pila":stack.copy(),
-                                "entrada":current_char,
-                                "estado":state
-                            })
-
-                            print(stack)
-
-                    elif actual_stack_top["tipo"] == "terminal" and actual_stack_top["valor"] == string[i]:
-                        i += 1
-                        stack.pop(0)
+                    stack_top = stack[0]
+    
+                    if stack_top["tipo"] == "no terminal" and stack_top["valor"] == "#":
+                        state = "f" # Me aceptaron
                         stack_to_print.append({
                             "pila":stack.copy(),
-                            "entrada":current_char,
+                            "entrada": "λ",
                             "estado":state
                         })
-                        print(stack)
+                    else:
+                        i += 1
+                        temp = i
+                        if i >= input_length:
+                            temp -= 1
 
-                    elif actual_stack_top["tipo"] == "terminal" and actual_stack_top["valor"] != string[i]:
-                        print("Cadena no aceptada, caracter no esperado: " + current_char)
-                        return
-                    elif actual_stack_top["tipo"] == "no terminal" and actual_stack_top["valor"] == "#":
-                        stack.pop(0)
-                        stack_to_print.pop()
                         stack_to_print.append({
-                            "pila":[{
-                            "tipo": "no terminal",
-                            "valor": "#"
-                        }],
-                            "entrada":"λ",
+                            "pila":stack.copy(),
+                            "entrada": string[temp],
                             "estado":state
                         })
-                        state = "f"
-                        i -= 1
-                        break
 
+                        if i >= input_length:
+                            # Cadena incompleta, se esperaban más caracteres
+                            self.run_realtime(menu_option, stack_to_print, grammar, "Cadena incompleta, se esperaban más caracteres")
+                
+                elif stack_top["tipo"] == "terminal" and stack_top["valor"] != current_char:
+                    # Cadena inválida, caracter no esperado
+                    self.run_realtime(menu_option, stack_to_print, grammar, "Cadena inválida, caracter no esperado: " + current_char)
+                    return
+
+                elif stack_top["tipo"] == "no terminal":
+                    
+                    original_stack = stack.copy()
+
+                    self.terminal_search(grammar.producciones, stack_top.copy(), stack, stack_to_print, string, i, [], state, menu_option)
+
+                    if original_stack == stack:
+                        # Caracter no esperado
+                        self.forze_error = True
+                    continue
+                    
 
             elif state == "f":
                 print(stack)
@@ -264,10 +236,100 @@ class Automata:
                     "entrada":"λ",
                     "estado":state
                 })
-                print("Cadena aceptada")
-                if menu_option == 4:
-                    self.build_automata_running(stack_to_print, grammar)
-                else:
-                    Helper().build_table(stack_to_print, grammar)
+                # Cadena aceptada
+                self.run_realtime(menu_option, stack_to_print, grammar, "Cadena aceptada")
                 return
+    
+    def terminal_search(self, producciones, stack_top, stack, stack_to_print, string, position, next_rules, state, menu_option):
+        grammar = ProyectoSingleton().selected_grammar
+        entrada = string[position]
 
+        for produccion in producciones:
+            if stack_top["valor"] == produccion["name"]:
+
+                rules = []
+
+                # Check ambiguity
+                for rule in produccion["rules"]:
+                    if rule[0]["tipo"] == "terminal" and rule[0]["valor"] == entrada:
+                        rules.append(rule)
+                    elif rule[0]["tipo"] == "no terminal":
+                        rules.append(rule)
+                
+                rule_length = len(rules)
+
+                for pos in range(rule_length):
+
+                    rule = rules[pos]
+
+                    if rule[0]["tipo"] == "no terminal":
+                        print(stack)
+                        if next_rules == []:
+                            next_rules = rule
+
+                        if pos == rule_length - 1 and next_rules == []:
+                            # Caracter no esperado
+                            self.run_realtime(menu_option, stack_to_print, grammar, "Caracter no esperado: " + entrada)
+                            self.forze_error = True
+                            return
+
+                        self.terminal_search(producciones, rule[0], stack, stack_to_print, string, position, next_rules, state, menu_option)
+
+                    elif rule[0]["tipo"] == "terminal" and rule[0]["valor"] == entrada:
+                        ambiguity_rules = []
+                        for internal_rule in rules:
+                            if internal_rule[0]["valor"] == entrada:
+                                ambiguity_rules.append(internal_rule)
+
+                        if len(ambiguity_rules) > 1:
+                            # AMBIGUEDAD
+                            if position == len(string) - 1: # Cadena terminada
+                                for ambiguity_rule in ambiguity_rules:
+                                    if len(ambiguity_rule) == 1:
+                                        rule = ambiguity_rule
+                            else:
+                                next_character = string[position + 1]
+                                rule = []
+                                for ambiguity_rule in ambiguity_rules:
+
+                                    if len(ambiguity_rule) > 1:
+                                        if ambiguity_rule[1]["tipo"] == "terminal" and ambiguity_rule[1]["valor"] == next_character:
+                                            rule = ambiguity_rule
+                                            break
+                                        else:
+                                            for int_prod in producciones:
+                                                if int_prod["name"] == ambiguity_rule[1]["valor"]:
+                                                    for int_rule in int_prod["rules"]:
+                                                        if int_rule[0]["valor"] == next_character:
+                                                            rule = ambiguity_rule
+
+                                    if len(ambiguity_rule) == 1 and rule == []:
+                                        rule = ambiguity_rule
+
+                        if next_rules == []:
+                            next_rules = rule
+
+                        stack.pop(0)
+                        for o in reversed(range(len(next_rules))):
+                            stack.insert(0, next_rules[o])
+
+                        stack_to_print.append({
+                            "pila":stack.copy(),
+                            "entrada":entrada,
+                            "estado":state
+                        })
+
+                        print(stack)
+                        return
+
+                    elif rule[0]["tipo"] == "terminal" and rule[0]["valor"] != entrada and pos == rule_length and next_rules != []:
+                        print(stack) # Cadena invalida, caracter no esperado
+                        self.forze_error = True
+                        return
+
+    def run_realtime(self, menu_option, stack_to_print, grammar, reason):
+        if menu_option == 4:
+            self.build_automata_running(stack_to_print, grammar, reason)
+        else:
+            Helper().build_table(stack_to_print, grammar, reason)
+                    
